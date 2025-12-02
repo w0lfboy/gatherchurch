@@ -104,11 +104,15 @@ export default function Auth() {
     const { error } = await signIn(loginEmail, loginPassword);
     
     if (error) {
+      let description = error.message;
+      if (error.message === 'Invalid login credentials') {
+        description = 'Invalid email or password. If you haven\'t created an account yet, please use the "Create Account" tab first.';
+      } else if (error.message.includes('Email not confirmed')) {
+        description = 'Your email hasn\'t been confirmed. Please create a new account or contact support.';
+      }
       toast({
         title: 'Sign in failed',
-        description: error.message === 'Invalid login credentials' 
-          ? 'Invalid email or password. Please try again.'
-          : error.message,
+        description,
         variant: 'destructive',
       });
     } else {
