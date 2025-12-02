@@ -5,9 +5,9 @@ import { PersonDetail } from "@/components/people/PersonDetail";
 import { PipelineBoard } from "@/components/people/PipelineBoard";
 import { Button } from "@/components/ui/button";
 import { 
-  LayoutDashboard, Users, Calendar, Music, Heart, 
-  MessageSquare, CheckCircle, Settings, Bell, Search,
-  List, Kanban, X, UserCheck, Book
+  LayoutDashboard, Users, Calendar, Heart, 
+  MessageSquare, CheckCircle, Settings, Bell,
+  List, Kanban, X, UserCheck, Book, CalendarDays
 } from "lucide-react";
 import { ChurchDirectory } from "@/components/people/ChurchDirectory";
 import { Link } from "react-router-dom";
@@ -21,6 +21,7 @@ const navigation = [
   { name: "Groups", icon: Users, href: "/groups" },
   { name: "Giving", icon: Heart, href: "/giving" },
   { name: "Check-Ins", icon: CheckCircle, href: "/checkins" },
+  { name: "Events", icon: CalendarDays, href: "/events" },
   { name: "Messages", icon: MessageSquare, href: "/messages" },
 ];
 
