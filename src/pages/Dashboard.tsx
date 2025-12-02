@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, Users, Calendar, Music, Heart, 
@@ -8,13 +7,13 @@ import {
 import { Link } from "react-router-dom";
 
 const navigation = [
-  { name: "Dashboard", icon: LayoutDashboard, active: true },
-  { name: "Services", icon: Calendar },
-  { name: "People", icon: Users },
-  { name: "Groups", icon: Users },
-  { name: "Giving", icon: Heart },
-  { name: "Check-Ins", icon: CheckCircle },
-  { name: "Messages", icon: MessageSquare },
+  { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
+  { name: "Services", icon: Calendar, href: "/services" },
+  { name: "People", icon: Users, href: "/people" },
+  { name: "Groups", icon: Users, href: "/groups" },
+  { name: "Giving", icon: Heart, href: "/giving" },
+  { name: "Check-Ins", icon: CheckCircle, href: "/checkins" },
+  { name: "Messages", icon: MessageSquare, href: "/messages" },
 ];
 
 const upcomingTasks = [
@@ -24,7 +23,6 @@ const upcomingTasks = [
 ];
 
 const Dashboard = () => {
-  const [activeNav, setActiveNav] = useState("Dashboard");
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -43,18 +41,18 @@ const Dashboard = () => {
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
           {navigation.map((item) => (
-            <button
+            <Link
               key={item.name}
-              onClick={() => setActiveNav(item.name)}
+              to={item.href}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                activeNav === item.name
+                item.active
                   ? "bg-sage-light text-sage-dark"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               }`}
             >
               <item.icon className="w-5 h-5" />
               {item.name}
-            </button>
+            </Link>
           ))}
         </nav>
 
