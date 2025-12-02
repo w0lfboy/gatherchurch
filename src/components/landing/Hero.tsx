@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 
@@ -37,9 +38,11 @@ export const Hero = () => {
 
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-up animation-delay-300">
-            <Button variant="hero" size="xl">
-              Start free trial
-              <ArrowRight className="w-5 h-5 ml-1" />
+            <Button variant="hero" size="xl" asChild>
+              <Link to="/demo">
+                Start free trial
+                <ArrowRight className="w-5 h-5 ml-1" />
+              </Link>
             </Button>
             <Button variant="soft" size="xl">
               <Play className="w-5 h-5" />

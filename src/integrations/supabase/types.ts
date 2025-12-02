@@ -96,6 +96,7 @@ export type Database = {
           is_active: boolean | null
           last_login_at: string | null
           phone: string | null
+          tenant_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -107,6 +108,7 @@ export type Database = {
           is_active?: boolean | null
           last_login_at?: string | null
           phone?: string | null
+          tenant_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -118,9 +120,18 @@ export type Database = {
           is_active?: boolean | null
           last_login_at?: string | null
           phone?: string | null
+          tenant_id?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       role_permissions: {
         Row: {
@@ -159,6 +170,77 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tenant_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_members_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          created_at: string
+          id: string
+          logo_url: string | null
+          name: string
+          primary_color: string | null
+          slug: string
+          subscription_status: string | null
+          subscription_tier: string | null
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          primary_color?: string | null
+          slug: string
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          primary_color?: string | null
+          slug?: string
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_custom_roles: {
         Row: {
@@ -265,6 +347,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_tenant_id: { Args: { _user_id: string }; Returns: string }
       has_any_super_admin: { Args: never; Returns: boolean }
       has_permission: {
         Args: {
@@ -282,6 +365,14 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_tenant_admin: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_tenant_member: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: boolean
+      }
       make_first_super_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
