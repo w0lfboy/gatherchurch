@@ -7,15 +7,16 @@ import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, Users, Calendar, Music, Heart, 
   MessageSquare, CheckCircle, Settings, Bell, Search,
-  List, Kanban, X, UserCheck
+  List, Kanban, X, UserCheck, Book
 } from "lucide-react";
+import { ChurchDirectory } from "@/components/people/ChurchDirectory";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { name: "Services", icon: Calendar, href: "/services" },
-  { name: "People", icon: Users, href: "/people", active: true },
+  { name: "Congregation", icon: Users, href: "/congregation", active: true },
   { name: "Volunteers", icon: UserCheck, href: "/volunteers" },
   { name: "Groups", icon: Users, href: "/groups" },
   { name: "Giving", icon: Heart, href: "/giving" },
@@ -23,9 +24,9 @@ const navigation = [
   { name: "Messages", icon: MessageSquare, href: "/messages" },
 ];
 
-type ViewMode = 'list' | 'pipeline';
+type ViewMode = 'list' | 'pipeline' | 'directory';
 
-const People = () => {
+const Congregation = () => {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
 
@@ -102,6 +103,18 @@ const People = () => {
                 <Kanban className="w-4 h-4" />
                 Pipeline
               </button>
+              <button
+                onClick={() => setViewMode('directory')}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                  viewMode === 'directory'
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Book className="w-4 h-4" />
+                Directory
+              </button>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -122,13 +135,17 @@ const People = () => {
             "flex-1 min-w-0 transition-all duration-300",
             selectedPerson ? "w-1/2" : "w-full"
           )}>
-            {viewMode === 'list' ? (
+            {viewMode === 'list' && (
               <PeopleList 
                 onSelectPerson={setSelectedPerson}
                 selectedPersonId={selectedPerson?.id}
               />
-            ) : (
+            )}
+            {viewMode === 'pipeline' && (
               <PipelineBoard onSelectPerson={setSelectedPerson} />
+            )}
+            {viewMode === 'directory' && (
+              <ChurchDirectory onSelectPerson={setSelectedPerson} />
             )}
           </div>
 
@@ -152,4 +169,4 @@ const People = () => {
   );
 };
 
-export default People;
+export default Congregation;
