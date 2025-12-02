@@ -6,7 +6,7 @@ import { ServiceBuilder } from "@/components/services/ServiceBuilder";
 import { RehearsalMode } from "@/components/services/RehearsalMode";
 import { 
   LayoutDashboard, Users, Calendar, Heart, 
-  MessageSquare, CheckCircle, Settings
+  MessageSquare, CheckCircle, Settings, UserCheck
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { name: "Services", icon: Calendar, href: "/services", active: true },
   { name: "People", icon: Users, href: "/people" },
+  { name: "Volunteers", icon: UserCheck, href: "/volunteers" },
   { name: "Groups", icon: Users, href: "/groups" },
   { name: "Giving", icon: Heart, href: "/giving" },
   { name: "Check-Ins", icon: CheckCircle, href: "/checkins" },
