@@ -13,6 +13,8 @@ import Groups from "./pages/Groups";
 import CheckIns from "./pages/CheckIns";
 import Events from "./pages/Events";
 import Communications from "./pages/Communications";
+import MobileApp from "./pages/MobileApp";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ const App = () => (
           <Route path="/events" element={<Events />} />
           <Route path="/communications" element={<Communications />} />
           <Route path="/messages" element={<Communications />} />
+          <Route path="/app/*" element={<MobileApp />} />
+          <Route path="/install" element={<Install />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
