@@ -60,10 +60,13 @@ const Dashboard = () => {
 
         {/* Bottom section */}
         <div className="p-4 border-t border-border space-y-1">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-all duration-200">
+          <Link 
+            to="/settings"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-all duration-200"
+          >
             <Settings className="w-5 h-5" />
             Settings
-          </button>
+          </Link>
         </div>
       </aside>
 
