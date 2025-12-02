@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, Users, Calendar, Music, Heart, 
   MessageSquare, CheckCircle, Settings, Bell, Search,
-  List, Kanban, X
+  List, Kanban, X, UserCheck
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { name: "Services", icon: Calendar, href: "/services" },
   { name: "People", icon: Users, href: "/people", active: true },
+  { name: "Volunteers", icon: UserCheck, href: "/volunteers" },
   { name: "Groups", icon: Users, href: "/groups" },
   { name: "Giving", icon: Heart, href: "/giving" },
   { name: "Check-Ins", icon: CheckCircle, href: "/checkins" },

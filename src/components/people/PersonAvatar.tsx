@@ -2,7 +2,8 @@ import { cn } from "@/lib/utils";
 import { Person } from "@/types/people";
 
 interface PersonAvatarProps {
-  person: Person;
+  person?: Person;
+  name?: string;
   size?: 'sm' | 'default' | 'lg' | 'xl';
   showStatus?: boolean;
 }
@@ -23,8 +24,13 @@ const statusColors: Record<string, string> = {
   inactive: 'bg-muted-foreground',
 };
 
-export const PersonAvatar = ({ person, size = 'default', showStatus = false }: PersonAvatarProps) => {
-  const initials = `${person.firstName[0]}${person.lastName[0]}`.toUpperCase();
+export const PersonAvatar = ({ person, name, size = 'default', showStatus = false }: PersonAvatarProps) => {
+  // Get display name and initials
+  const displayName = person ? `${person.firstName} ${person.lastName}` : name || '';
+  const nameParts = displayName.split(' ').filter(Boolean);
+  const initials = nameParts.length >= 2 
+    ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+    : displayName.slice(0, 2).toUpperCase();
   
   // Generate a consistent color based on name
   const colors = [
@@ -34,14 +40,15 @@ export const PersonAvatar = ({ person, size = 'default', showStatus = false }: P
     'from-sage-light to-coral-light',
     'from-coral-light to-secondary',
   ];
-  const colorIndex = (person.firstName.charCodeAt(0) + person.lastName.charCodeAt(0)) % colors.length;
+  const charSum = displayName.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const colorIndex = charSum % colors.length;
   
   return (
     <div className="relative inline-block">
-      {person.avatar ? (
+      {person?.avatar ? (
         <img
           src={person.avatar}
-          alt={`${person.firstName} ${person.lastName}`}
+          alt={displayName}
           className={cn(
             "rounded-full object-cover",
             sizeClasses[size]
@@ -58,7 +65,7 @@ export const PersonAvatar = ({ person, size = 'default', showStatus = false }: P
           {initials}
         </div>
       )}
-      {showStatus && (
+      {showStatus && person && (
         <span
           className={cn(
             "absolute bottom-0 right-0 rounded-full border-2 border-background",

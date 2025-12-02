@@ -10,6 +10,7 @@ const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
   { name: "Services", icon: Calendar, href: "/services" },
   { name: "People", icon: Users, href: "/people" },
+  { name: "Volunteers", icon: UserCheck, href: "/volunteers" },
   { name: "Groups", icon: Users, href: "/groups" },
   { name: "Giving", icon: Heart, href: "/giving" },
   { name: "Check-Ins", icon: CheckCircle, href: "/checkins" },
