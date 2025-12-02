@@ -5,6 +5,7 @@ import {
   ChevronRight, Plus, TrendingUp, UserCheck, Clock
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { UserMenu } from "@/components/UserMenu";
 
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
@@ -89,9 +90,7 @@ const Dashboard = () => {
               <Bell className="w-5 h-5 text-muted-foreground" />
               <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-coral" />
             </button>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-sage-light to-coral-light flex items-center justify-center">
-              <span className="text-sm font-semibold text-sage-dark">JD</span>
-            </div>
+            <UserMenu />
           </div>
         </header>
 
