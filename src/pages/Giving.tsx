@@ -1,7 +1,7 @@
 import { GivingDashboard } from '@/components/giving/GivingDashboard';
 import { 
   LayoutDashboard, Users, Calendar, Heart, 
-  MessageSquare, CheckCircle, Settings, UserCheck
+  MessageSquare, CheckCircle, Settings, UserCheck, CalendarDays
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -14,6 +14,7 @@ const navigation = [
   { name: 'Groups', icon: Users, href: '/groups' },
   { name: 'Giving', icon: Heart, href: '/giving', active: true },
   { name: 'Check-Ins', icon: CheckCircle, href: '/checkins' },
+  { name: 'Events', icon: CalendarDays, href: '/events' },
   { name: 'Messages', icon: MessageSquare, href: '/messages' },
 ];
 
