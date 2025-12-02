@@ -14,6 +14,7 @@ const navigation = [
   { name: 'Groups', icon: Users, href: '/groups' },
   { name: 'Giving', icon: Heart, href: '/giving' },
   { name: 'Check-Ins', icon: CheckCircle, href: '/checkins', active: true },
+  { name: 'Events', icon: LayoutDashboard, href: '/events' },
   { name: 'Messages', icon: MessageSquare, href: '/messages' },
 ];
 

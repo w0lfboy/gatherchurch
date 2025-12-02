@@ -1,57 +1,81 @@
 import { EventsDashboard } from '@/components/events/EventsDashboard';
-import { NavLink } from '@/components/NavLink';
+import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
   Users,
-  Music,
-  HandHeart,
-  DollarSign,
-  UsersRound,
-  CalendarCheck,
+  Calendar,
+  UserCheck,
+  Heart,
+  CheckCircle,
+  MessageSquare,
+  Settings,
   CalendarDays
 } from 'lucide-react';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Congregation', href: '/congregation', icon: Users },
-  { name: 'Services', href: '/services', icon: Music },
-  { name: 'Volunteers', href: '/volunteers', icon: HandHeart },
-  { name: 'Giving', href: '/giving', icon: DollarSign },
-  { name: 'Groups', href: '/groups', icon: UsersRound },
-  { name: 'Check-Ins', href: '/checkins', icon: CalendarCheck },
-  { name: 'Events', href: '/events', icon: CalendarDays, active: true },
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  { name: 'Services', icon: Calendar, href: '/services' },
+  { name: 'Congregation', icon: Users, href: '/congregation' },
+  { name: 'Volunteers', icon: UserCheck, href: '/volunteers' },
+  { name: 'Groups', icon: Users, href: '/groups' },
+  { name: 'Giving', icon: Heart, href: '/giving' },
+  { name: 'Check-Ins', icon: CheckCircle, href: '/checkins' },
+  { name: 'Events', icon: CalendarDays, href: '/events', active: true },
+  { name: 'Messages', icon: MessageSquare, href: '/messages' },
 ];
 
 export default function Events() {
   return (
-    <div className="min-h-screen flex w-full bg-background">
+    <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-card hidden lg:block">
-        <div className="p-6">
-          <h1 className="text-xl font-bold text-primary">ChurchOS</h1>
-          <p className="text-xs text-muted-foreground">Church Management</p>
+      <aside className="w-64 bg-card border-r border-border flex flex-col flex-shrink-0">
+        {/* Logo */}
+        <div className="p-6 border-b border-border">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-display font-bold text-lg">G</span>
+            </div>
+            <span className="font-display font-semibold text-xl text-foreground">Gather</span>
+          </Link>
         </div>
-        <nav className="px-3 space-y-1">
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-1">
           {navigation.map((item) => (
-            <NavLink
+            <Link
               key={item.name}
               to={item.href}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-              activeClassName="bg-primary/10 text-primary font-medium"
+              className={cn(
+                'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                item.active
+                  ? 'bg-sage-light text-sage-dark'
+                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+              )}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="w-5 h-5" />
               {item.name}
-            </NavLink>
+            </Link>
           ))}
         </nav>
+
+        {/* Bottom section */}
+        <div className="p-4 border-t border-border space-y-1">
+          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-all duration-200">
+            <Settings className="w-5 h-5" />
+            Settings
+          </button>
+        </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-          <EventsDashboard />
-        </div>
-      </main>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 overflow-auto">
+          <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+            <EventsDashboard />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
