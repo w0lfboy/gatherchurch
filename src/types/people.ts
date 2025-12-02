@@ -2,6 +2,13 @@
 
 export type PersonStatus = 'visitor' | 'regular' | 'member' | 'volunteer' | 'leader' | 'inactive';
 
+export interface DirectoryVisibility {
+  showInDirectory: boolean;
+  showEmail: boolean;
+  showPhone: boolean;
+  showAddress: boolean;
+}
+
 export interface Person {
   id: string;
   firstName: string;
@@ -21,6 +28,7 @@ export interface Person {
   pipelineStageId?: string;
   backgroundCheckStatus?: 'none' | 'pending' | 'approved' | 'expired';
   backgroundCheckDate?: string;
+  directoryVisibility?: DirectoryVisibility;
   createdAt: string;
   updatedAt: string;
 }

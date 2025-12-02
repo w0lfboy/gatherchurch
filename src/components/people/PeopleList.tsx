@@ -68,7 +68,7 @@ export const PeopleList = ({ onSelectPerson, selectedPersonId }: PeopleListProps
       <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-display font-semibold text-foreground">People</h1>
+            <h1 className="text-2xl font-display font-semibold text-foreground">Congregation</h1>
             <p className="text-sm text-muted-foreground">
               {filteredPeople.length} {filteredPeople.length === 1 ? 'person' : 'people'}
             </p>
