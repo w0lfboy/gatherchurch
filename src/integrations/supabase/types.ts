@@ -14,16 +14,299 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          id: string
+          ip_address: unknown
+          new_values: Json | null
+          old_values: Json | null
+          target_id: string | null
+          target_type: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          new_values?: Json | null
+          old_values?: Json | null
+          target_id?: string | null
+          target_type: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          new_values?: Json | null
+          old_values?: Json | null
+          target_id?: string | null
+          target_type?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      custom_roles: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          is_active: boolean | null
+          last_login_at: string | null
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      role_permissions: {
+        Row: {
+          action: Database["public"]["Enums"]["permission_action"]
+          created_at: string | null
+          custom_role_id: string | null
+          id: string
+          is_granted: boolean | null
+          module: Database["public"]["Enums"]["app_module"]
+          role: Database["public"]["Enums"]["app_role"] | null
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["permission_action"]
+          created_at?: string | null
+          custom_role_id?: string | null
+          id?: string
+          is_granted?: boolean | null
+          module: Database["public"]["Enums"]["app_module"]
+          role?: Database["public"]["Enums"]["app_role"] | null
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["permission_action"]
+          created_at?: string | null
+          custom_role_id?: string | null
+          id?: string
+          is_granted?: boolean | null
+          module?: Database["public"]["Enums"]["app_module"]
+          role?: Database["public"]["Enums"]["app_role"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_custom_role_id_fkey"
+            columns: ["custom_role_id"]
+            isOneToOne: false
+            referencedRelation: "custom_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_custom_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          custom_role_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          custom_role_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          custom_role_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_custom_roles_custom_role_id_fkey"
+            columns: ["custom_role_id"]
+            isOneToOne: false
+            referencedRelation: "custom_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string | null
+          custom_role_id: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invited_by: string | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string | null
+          custom_role_id?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          token?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string | null
+          custom_role_id?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_invitations_custom_role_id_fkey"
+            columns: ["custom_role_id"]
+            isOneToOne: false
+            referencedRelation: "custom_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_permission: {
+        Args: {
+          _action: Database["public"]["Enums"]["permission_action"]
+          _module: Database["public"]["Enums"]["app_module"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_module:
+        | "people"
+        | "services"
+        | "groups"
+        | "events"
+        | "messaging"
+        | "giving"
+        | "checkins"
+        | "volunteers"
+        | "settings"
+      app_role: "super_admin" | "admin" | "editor" | "viewer" | "custom"
+      permission_action:
+        | "view"
+        | "create"
+        | "update"
+        | "delete"
+        | "export"
+        | "view_notes"
+        | "edit_notes"
+        | "view_confidential"
+        | "send_message"
+        | "approve"
+        | "schedule"
+        | "manage"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +433,33 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_module: [
+        "people",
+        "services",
+        "groups",
+        "events",
+        "messaging",
+        "giving",
+        "checkins",
+        "volunteers",
+        "settings",
+      ],
+      app_role: ["super_admin", "admin", "editor", "viewer", "custom"],
+      permission_action: [
+        "view",
+        "create",
+        "update",
+        "delete",
+        "export",
+        "view_notes",
+        "edit_notes",
+        "view_confidential",
+        "send_message",
+        "approve",
+        "schedule",
+        "manage",
+      ],
+    },
   },
 } as const
