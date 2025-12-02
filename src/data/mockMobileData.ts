@@ -1,0 +1,145 @@
+import { Sermon, ConnectCard, MySundayShift, UserProfile } from '@/types/mobile';
+
+export const mockUserProfile: UserProfile = {
+  id: 'user-1',
+  name: 'Sarah Mitchell',
+  email: 'sarah@example.com',
+  avatar: undefined,
+  roles: ['member', 'leader'],
+  primaryRole: 'member',
+};
+
+export const mockSermons: Sermon[] = [
+  {
+    id: 'sermon-1',
+    title: 'Hope for the Holidays',
+    speaker: 'Pastor John Davis',
+    date: '2024-12-15',
+    duration: '42 min',
+    seriesName: 'Christmas Series',
+    description: 'Finding hope and peace during the holiday season through the story of Jesus\' birth.',
+    thumbnail: 'https://images.unsplash.com/photo-1510936111840-65e151ad71ab?w=400&h=225&fit=crop',
+  },
+  {
+    id: 'sermon-2',
+    title: 'The Gift of Presence',
+    speaker: 'Pastor John Davis',
+    date: '2024-12-08',
+    duration: '38 min',
+    seriesName: 'Christmas Series',
+    description: 'Understanding God\'s greatest gift - His presence with us.',
+    thumbnail: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=400&h=225&fit=crop',
+  },
+  {
+    id: 'sermon-3',
+    title: 'Living with Purpose',
+    speaker: 'Pastor Sarah Kim',
+    date: '2024-12-01',
+    duration: '35 min',
+    seriesName: 'Purpose Driven',
+    description: 'Discovering your God-given purpose and living it out daily.',
+    thumbnail: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=400&h=225&fit=crop',
+  },
+  {
+    id: 'sermon-4',
+    title: 'Faith Over Fear',
+    speaker: 'Pastor John Davis',
+    date: '2024-11-24',
+    duration: '40 min',
+    seriesName: 'Purpose Driven',
+    description: 'Overcoming anxiety and fear through trusting in God\'s promises.',
+    thumbnail: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop',
+  },
+];
+
+export const mockConnectCards: ConnectCard[] = [
+  {
+    id: 'cc-1',
+    type: 'first_time',
+    submittedAt: '2024-01-21T10:30:00',
+    name: 'Michael Chen',
+    email: 'michael.chen@email.com',
+    phone: '555-0123',
+    message: 'First time visiting! Loved the worship and message.',
+    status: 'new',
+  },
+  {
+    id: 'cc-2',
+    type: 'prayer_request',
+    submittedAt: '2024-01-21T11:15:00',
+    name: 'Jennifer Williams',
+    email: 'jwilliams@email.com',
+    message: 'Please pray for my mother\'s health. She\'s having surgery next week.',
+    status: 'reviewed',
+  },
+  {
+    id: 'cc-3',
+    type: 'volunteer_interest',
+    submittedAt: '2024-01-21T09:45:00',
+    name: 'David Rodriguez',
+    email: 'david.r@email.com',
+    phone: '555-0456',
+    message: 'Interested in serving on the welcome team or kids ministry.',
+    status: 'new',
+  },
+  {
+    id: 'cc-4',
+    type: 'decision',
+    submittedAt: '2024-01-21T11:30:00',
+    name: 'Amanda Foster',
+    email: 'amanda.f@email.com',
+    message: 'Made a decision to rededicate my life to Christ today.',
+    status: 'new',
+  },
+];
+
+export const mockMySundays: MySundayShift[] = [
+  {
+    id: 'shift-1',
+    date: '2024-01-21',
+    serviceName: 'Sunday Morning',
+    serviceTime: '9:00 AM',
+    teamName: 'Worship Team',
+    position: 'Vocals',
+    checkInTime: '8:15 AM',
+    notes: 'Rehearsal at 8:30 AM in the sanctuary',
+  },
+  {
+    id: 'shift-2',
+    date: '2024-01-28',
+    serviceName: 'Sunday Morning',
+    serviceTime: '11:00 AM',
+    teamName: 'Welcome Team',
+    position: 'Greeter',
+    checkInTime: '10:30 AM',
+    notes: 'Meet at main entrance',
+  },
+  {
+    id: 'shift-3',
+    date: '2024-02-04',
+    serviceName: 'Sunday Morning',
+    serviceTime: '9:00 AM',
+    teamName: 'Kids Ministry',
+    position: 'Elementary Lead',
+    checkInTime: '8:15 AM',
+    notes: 'Lesson materials in room 104',
+  },
+  {
+    id: 'shift-4',
+    date: '2024-02-11',
+    serviceName: 'Sunday Morning',
+    serviceTime: '9:00 AM & 11:00 AM',
+    teamName: 'Production Team',
+    position: 'Camera Operator',
+    checkInTime: '8:00 AM',
+    notes: 'Both services - lunch provided',
+  },
+];
+
+export const connectCardTypes = {
+  first_time: { label: 'First Time Visitor', color: 'bg-blue-500' },
+  prayer_request: { label: 'Prayer Request', color: 'bg-purple-500' },
+  decision: { label: 'Decision Made', color: 'bg-green-500' },
+  contact_update: { label: 'Contact Update', color: 'bg-gray-500' },
+  volunteer_interest: { label: 'Volunteer Interest', color: 'bg-orange-500' },
+};
