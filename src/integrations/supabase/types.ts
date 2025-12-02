@@ -265,6 +265,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_any_super_admin: { Args: never; Returns: boolean }
       has_permission: {
         Args: {
           _action: Database["public"]["Enums"]["permission_action"]
@@ -281,6 +282,7 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      make_first_super_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_module:

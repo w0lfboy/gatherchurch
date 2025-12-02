@@ -25,6 +25,7 @@ import { RoleManagement } from "@/components/settings/RoleManagement";
 import { UserManagement } from "@/components/settings/UserManagement";
 import { InviteUsers } from "@/components/settings/InviteUsers";
 import { PermissionsMatrix } from "@/components/settings/PermissionsMatrix";
+import { FirstAdminSetup } from "@/components/settings/FirstAdminSetup";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -113,8 +114,10 @@ export default function Settings() {
               </p>
             </div>
 
+            <FirstAdminSetup />
+
             {(isSuperAdmin || isAdmin) ? (
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 mt-6">
                 <TabsList className="bg-muted/50">
                   <TabsTrigger value="users" className="gap-2">
                     <Users className="w-4 h-4" />
