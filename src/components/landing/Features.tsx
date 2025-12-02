@@ -74,7 +74,7 @@ const colorMap = {
 
 export const Features = () => {
   return (
-    <section className="py-24 bg-background">
+    <section id="features" className="py-24 bg-background">
       <div className="container px-4 mx-auto">
         {/* Section header */}
         <div className="max-w-3xl mx-auto text-center mb-16">
