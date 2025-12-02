@@ -3,7 +3,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
+import { PermissionsProvider } from "@/hooks/usePermissions";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Congregation from "./pages/Congregation";
 import Services from "./pages/Services";
@@ -15,35 +19,42 @@ import Events from "./pages/Events";
 import Communications from "./pages/Communications";
 import MobileApp from "./pages/MobileApp";
 import Install from "./pages/Install";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/congregation" element={<Congregation />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/volunteers" element={<Volunteers />} />
-          <Route path="/giving" element={<Giving />} />
-          <Route path="/groups" element={<Groups />} />
-          <Route path="/checkins" element={<CheckIns />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/communications" element={<Communications />} />
-          <Route path="/messages" element={<Communications />} />
-          <Route path="/app/*" element={<MobileApp />} />
-          <Route path="/install" element={<Install />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <PermissionsProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/congregation" element={<ProtectedRoute><Congregation /></ProtectedRoute>} />
+              <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
+              <Route path="/volunteers" element={<ProtectedRoute><Volunteers /></ProtectedRoute>} />
+              <Route path="/giving" element={<ProtectedRoute><Giving /></ProtectedRoute>} />
+              <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
+              <Route path="/checkins" element={<ProtectedRoute><CheckIns /></ProtectedRoute>} />
+              <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+              <Route path="/communications" element={<ProtectedRoute><Communications /></ProtectedRoute>} />
+              <Route path="/messages" element={<ProtectedRoute><Communications /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              <Route path="/app/*" element={<MobileApp />} />
+              <Route path="/install" element={<Install />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </PermissionsProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

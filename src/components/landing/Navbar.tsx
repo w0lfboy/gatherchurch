@@ -40,10 +40,12 @@ export const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/dashboard">
+            <Link to="/auth">
               <Button variant="ghost">Sign in</Button>
             </Link>
-            <Button variant="default">Start free trial</Button>
+            <Link to="/auth">
+              <Button variant="default">Start free trial</Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -70,10 +72,12 @@ export const Navbar = () => {
                 </a>
               ))}
               <div className="pt-4 space-y-3">
-                <Link to="/dashboard">
+                <Link to="/auth">
                   <Button variant="outline" className="w-full">Sign in</Button>
                 </Link>
-                <Button variant="default" className="w-full">Start free trial</Button>
+                <Link to="/auth">
+                  <Button variant="default" className="w-full">Start free trial</Button>
+                </Link>
               </div>
             </div>
           </div>
