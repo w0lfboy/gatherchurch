@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { Eye, EyeOff, Loader2, Church, ArrowLeft } from 'lucide-react';
 
 const emailSchema = z.string().email('Please enter a valid email address');
@@ -25,6 +26,7 @@ export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [mode, setMode] = useState<AuthMode>('login');
+  const [isRecoverySession, setIsRecoverySession] = useState(false);
   
   // Login form
   const [loginEmail, setLoginEmail] = useState('');
@@ -51,14 +53,26 @@ export default function Auth() {
     const type = searchParams.get('type');
     if (type === 'recovery') {
       setMode('reset');
+      setIsRecoverySession(true);
     }
+
+    // Listen for PASSWORD_RECOVERY event from Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setMode('reset');
+        setIsRecoverySession(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [searchParams]);
 
   useEffect(() => {
-    if (!loading && user && mode !== 'reset') {
+    // Only redirect to dashboard if logged in and NOT in recovery mode
+    if (!loading && user && !isRecoverySession && mode !== 'reset') {
       navigate('/dashboard');
     }
-  }, [user, loading, navigate, mode]);
+  }, [user, loading, navigate, mode, isRecoverySession]);
 
   const validateLogin = () => {
     const newErrors: Record<string, string> = {};
