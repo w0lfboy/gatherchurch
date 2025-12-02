@@ -29,9 +29,13 @@ export default function Communications() {
     <div className="min-h-screen flex w-full bg-background">
       {/* Sidebar */}
       <aside className="w-64 border-r bg-card hidden lg:block">
-        <div className="p-6">
-          <h1 className="text-xl font-bold text-primary">ChurchOS</h1>
-          <p className="text-xs text-muted-foreground">Church Management</p>
+        <div className="p-6 border-b border-border">
+          <a href="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-display font-bold text-lg">G</span>
+            </div>
+            <span className="font-display font-semibold text-xl text-foreground">Gather</span>
+          </a>
         </div>
         <nav className="px-3 space-y-1">
           {navigation.map((item) => (
