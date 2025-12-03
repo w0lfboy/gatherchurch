@@ -91,27 +91,27 @@ export default function MobileApp() {
           <Routes>
             {/* Home - shows different content based on mode */}
             <Route 
-              path="/" 
+              index
               element={mode === 'leader' ? <LeaderHome /> : <MemberHome />} 
             />
             
             {/* Shared Routes */}
-            <Route path="/groups" element={<GroupsView />} />
-            <Route path="/groups/:id" element={<GroupsView />} />
-            <Route path="/messages" element={<MessagesView />} />
-            <Route path="/notifications" element={<NotificationsView />} />
-            <Route path="/settings" element={<SettingsView />} />
+            <Route path="groups" element={<GroupsView />} />
+            <Route path="groups/:id" element={<GroupsView />} />
+            <Route path="messages" element={<MessagesView />} />
+            <Route path="notifications" element={<NotificationsView />} />
+            <Route path="settings" element={<SettingsView />} />
             
             {/* Member Routes */}
-            <Route path="/give" element={<GivingInterface />} />
-            <Route path="/sermons" element={<SermonArchive />} />
-            <Route path="/events" element={<EventsView />} />
-            <Route path="/connect" element={<DigitalConnectCard />} />
+            <Route path="give" element={<GivingInterface />} />
+            <Route path="sermons" element={<SermonArchive />} />
+            <Route path="events" element={<EventsView />} />
+            <Route path="connect" element={<DigitalConnectCard />} />
             
             {/* Leader Routes */}
-            <Route path="/sundays" element={<MySundaysDashboard />} />
-            <Route path="/checkins" element={<CheckInsView />} />
-            <Route path="/connect-cards" element={<DigitalConnectCard />} />
+            <Route path="sundays" element={<MySundaysDashboard />} />
+            <Route path="checkins" element={<CheckInsView />} />
+            <Route path="connect-cards" element={<DigitalConnectCard />} />
           </Routes>
         </div>
       </main>
