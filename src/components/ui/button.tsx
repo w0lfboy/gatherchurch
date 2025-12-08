@@ -39,12 +39,39 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  haptic?: boolean | 'light' | 'medium' | 'heavy';
 }
 
+const triggerHaptic = (type: 'light' | 'medium' | 'heavy' = 'light') => {
+  if (!('vibrate' in navigator)) return;
+  try {
+    const patterns = { light: 10, medium: 25, heavy: 50 };
+    navigator.vibrate(patterns[type]);
+  } catch (e) {
+    // Silently fail
+  }
+};
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, haptic = false, onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (haptic) {
+        const hapticType = typeof haptic === 'string' ? haptic : 'light';
+        triggerHaptic(hapticType);
+      }
+      onClick?.(e);
+    };
+    
+    return (
+      <Comp 
+        className={cn(buttonVariants({ variant, size, className }))} 
+        ref={ref} 
+        onClick={handleClick}
+        {...props} 
+      />
+    );
   },
 );
 Button.displayName = "Button";
