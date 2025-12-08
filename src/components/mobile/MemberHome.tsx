@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,17 +16,29 @@ import { mockSermons } from '@/data/mockMobileData';
 import { mockGroups } from '@/data/mockGroupsData';
 import { mockEvents } from '@/data/mockEventsData';
 import { format, parseISO, isThisWeek } from 'date-fns';
+import { PullToRefresh } from './PullToRefresh';
+import { toast } from 'sonner';
 
 export function MemberHome() {
+  const [refreshKey, setRefreshKey] = useState(0);
+  
   const latestSermon = mockSermons[0];
   const myGroups = mockGroups.slice(0, 2);
   const upcomingEvents = mockEvents
     .filter(e => isThisWeek(parseISO(e.startDate)))
     .slice(0, 3);
 
+  const handleRefresh = useCallback(async () => {
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setRefreshKey(prev => prev + 1);
+    toast.success('Content refreshed');
+  }, []);
+
   return (
-    <div className="space-y-6 pb-4">
-      {/* Welcome Section */}
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="space-y-6 pb-4" key={refreshKey}>
+        {/* Welcome Section */}
       <div className="px-4">
         <h1 className="text-2xl font-display font-semibold text-foreground">
           Welcome back, Sarah
@@ -145,7 +158,8 @@ export function MemberHome() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }
 

@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,15 +15,27 @@ import {
 } from 'lucide-react';
 import { mockMySundays, mockConnectCards, connectCardTypes } from '@/data/mockMobileData';
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from 'date-fns';
+import { PullToRefresh } from './PullToRefresh';
+import { toast } from 'sonner';
 
 export function LeaderHome() {
+  const [refreshKey, setRefreshKey] = useState(0);
+  
   const nextShift = mockMySundays[0];
   const newConnectCards = mockConnectCards.filter(c => c.status === 'new');
   const upcomingShifts = mockMySundays.slice(0, 3);
 
+  const handleRefresh = useCallback(async () => {
+    // Simulate network request
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setRefreshKey(prev => prev + 1);
+    toast.success('Content refreshed');
+  }, []);
+
   return (
-    <div className="space-y-6 pb-4">
-      {/* Welcome Section */}
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="space-y-6 pb-4" key={refreshKey}>
+        {/* Welcome Section */}
       <div className="px-4">
         <h1 className="text-2xl font-display font-semibold text-foreground">
           Welcome back, Sarah
@@ -175,6 +188,7 @@ export function LeaderHome() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }
