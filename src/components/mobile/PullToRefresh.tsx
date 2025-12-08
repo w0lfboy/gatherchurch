@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { useHaptics } from '@/hooks/useHaptics';
 
 interface PullToRefreshProps {
   children: ReactNode;
@@ -10,11 +11,34 @@ interface PullToRefreshProps {
 }
 
 export function PullToRefresh({ children, onRefresh, className }: PullToRefreshProps) {
+  const haptics = useHaptics();
+  const hasTriggeredThreshold = useRef(false);
+  const wasRefreshing = useRef(false);
+  
   const { containerRef, pullDistance, isRefreshing, isPulling } = usePullToRefresh({
     onRefresh,
     threshold: 80,
     maxPull: 120,
   });
+
+  // Haptic feedback when crossing threshold
+  useEffect(() => {
+    const progress = pullDistance / 80;
+    if (progress >= 1 && !hasTriggeredThreshold.current && isPulling) {
+      hasTriggeredThreshold.current = true;
+      haptics.medium();
+    } else if (progress < 1) {
+      hasTriggeredThreshold.current = false;
+    }
+  }, [pullDistance, isPulling, haptics]);
+
+  // Haptic feedback when refresh completes
+  useEffect(() => {
+    if (wasRefreshing.current && !isRefreshing) {
+      haptics.success();
+    }
+    wasRefreshing.current = isRefreshing;
+  }, [isRefreshing, haptics]);
 
   const progress = Math.min(pullDistance / 80, 1);
   const rotation = pullDistance * 3;
