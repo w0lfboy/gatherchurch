@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { MobileHeader } from '@/components/mobile/MobileHeader';
 import { MobileNav } from '@/components/mobile/MobileNav';
+import { FloatingActionButton } from '@/components/mobile/FloatingActionButton';
 import { MemberHome } from '@/components/mobile/MemberHome';
 import { LeaderHome } from '@/components/mobile/LeaderHome';
 import { MySundaysDashboard } from '@/components/mobile/MySundaysDashboard';
@@ -115,6 +116,9 @@ export default function MobileApp() {
           </Routes>
         </div>
       </main>
+      
+      {/* Floating Action Button */}
+      <FloatingActionButton mode={mode} />
       
       {/* Fixed Bottom Navigation */}
       <MobileNav mode={mode} />
