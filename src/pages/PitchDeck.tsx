@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { 
   ChevronLeft, ChevronRight, Users, Target, TrendingUp, 
   Calendar, DollarSign, Rocket, Shield, Heart, 
-  CheckCircle, ArrowRight, Zap, Globe, Lock
+  CheckCircle, ArrowRight, Zap, Globe, Lock,
+  Maximize, Minimize, Keyboard, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface Slide {
   id: number;
@@ -14,6 +16,15 @@ interface Slide {
 
 const PitchDeck = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const slideRef = useRef<HTMLDivElement>(null);
+  
+  // Touch/swipe state
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const minSwipeDistance = 50;
 
   const slides: Slide[] = [
     // Slide 1: Title
@@ -549,33 +560,194 @@ const PitchDeck = () => {
     },
   ];
 
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     if (index >= 0 && index < slides.length) {
       setCurrentSlide(index);
     }
+  }, [slides.length]);
+
+  const nextSlide = useCallback(() => {
+    goToSlide(currentSlide + 1);
+  }, [currentSlide, goToSlide]);
+
+  const prevSlide = useCallback(() => {
+    goToSlide(currentSlide - 1);
+  }, [currentSlide, goToSlide]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullscreen();
+      } else if (e.key === 'Escape') {
+        if (isFullscreen) {
+          exitFullscreen();
+        }
+        setShowShortcuts(false);
+      } else if (e.key === '?') {
+        setShowShortcuts(prev => !prev);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goToSlide(slides.length - 1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [nextSlide, prevSlide, goToSlide, slides.length, isFullscreen]);
+
+  // Fullscreen handlers
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  }, []);
+
+  const exitFullscreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  // Touch/swipe handlers
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEndX.current = null;
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div 
+      ref={containerRef}
+      className={cn(
+        "min-h-screen bg-background flex flex-col",
+        isFullscreen && "fixed inset-0 z-50"
+      )}
+    >
+      {/* Keyboard Shortcuts Overlay */}
+      {showShortcuts && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-2xl border border-border shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-display font-semibold text-foreground">Keyboard Shortcuts</h3>
+              <button 
+                onClick={() => setShowShortcuts(false)}
+                className="p-2 rounded-lg hover:bg-secondary transition-colors"
+              >
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              {[
+                { keys: ['←', '→'], action: 'Navigate slides' },
+                { keys: ['Space'], action: 'Next slide' },
+                { keys: ['Home'], action: 'First slide' },
+                { keys: ['End'], action: 'Last slide' },
+                { keys: ['F'], action: 'Toggle fullscreen' },
+                { keys: ['Esc'], action: 'Exit fullscreen' },
+                { keys: ['?'], action: 'Toggle shortcuts' },
+              ].map((shortcut, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <span className="text-charcoal-light">{shortcut.action}</span>
+                  <div className="flex items-center gap-1">
+                    {shortcut.keys.map((key, j) => (
+                      <kbd 
+                        key={j}
+                        className="px-2 py-1 bg-secondary rounded text-xs font-mono text-foreground border border-border"
+                      >
+                        {key}
+                      </kbd>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-4 text-center">
+              Swipe left/right on touch devices
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Main slide area */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-5xl aspect-[16/9] bg-card rounded-2xl shadow-elevated border border-border overflow-hidden">
+      <div 
+        ref={slideRef}
+        className={cn(
+          "flex-1 flex items-center justify-center",
+          isFullscreen ? "p-4" : "p-8"
+        )}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <div className={cn(
+          "w-full bg-card rounded-2xl shadow-elevated border border-border overflow-hidden transition-all duration-300",
+          isFullscreen ? "max-w-full h-full max-h-full" : "max-w-5xl aspect-[16/9]"
+        )}>
           {slides[currentSlide].content}
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="p-6 bg-card border-t border-border">
+      <div className={cn(
+        "p-6 bg-card border-t border-border transition-opacity",
+        isFullscreen && "absolute bottom-0 left-0 right-0 opacity-0 hover:opacity-100"
+      )}>
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={() => goToSlide(currentSlide - 1)}
-            disabled={currentSlide === 0}
-            className="gap-2"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={prevSlide}
+              disabled={currentSlide === 0}
+              className="gap-2"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Previous</span>
+            </Button>
+          </div>
 
           <div className="flex items-center gap-2">
             {slides.map((slide, i) => (
@@ -592,17 +764,41 @@ const PitchDeck = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-sm text-muted-foreground hidden sm:block">
               {currentSlide + 1} / {slides.length}
             </span>
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowShortcuts(true)}
+              className="hidden sm:flex"
+              title="Keyboard shortcuts (?)"
+            >
+              <Keyboard className="w-4 h-4" />
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleFullscreen}
+              title={isFullscreen ? "Exit fullscreen (Esc)" : "Fullscreen (F)"}
+            >
+              {isFullscreen ? (
+                <Minimize className="w-4 h-4" />
+              ) : (
+                <Maximize className="w-4 h-4" />
+              )}
+            </Button>
+
             <Button
               variant="outline"
-              onClick={() => goToSlide(currentSlide + 1)}
+              onClick={nextSlide}
               disabled={currentSlide === slides.length - 1}
               className="gap-2"
             >
-              Next
+              <span className="hidden sm:inline">Next</span>
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
