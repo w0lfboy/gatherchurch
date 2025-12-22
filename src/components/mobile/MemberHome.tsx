@@ -18,8 +18,10 @@ import { mockEvents } from '@/data/mockEventsData';
 import { format, parseISO, isThisWeek } from 'date-fns';
 import { PullToRefresh } from './PullToRefresh';
 import { toast } from 'sonner';
+import { useHaptics } from '@/hooks/useHaptics';
 
 export function MemberHome() {
+  const haptics = useHaptics();
   const [refreshKey, setRefreshKey] = useState(0);
   
   const latestSermon = mockSermons[0];
@@ -107,8 +109,8 @@ export function MemberHome() {
         </div>
         <div className="space-y-3">
           {myGroups.map(group => (
-            <Link key={group.id} to={`/app/groups/${group.id}`}>
-              <Card className="hover:bg-secondary/50 transition-colors">
+            <Link key={group.id} to={`/app/groups/${group.id}`} onClick={() => haptics.light()}>
+              <Card className="hover:bg-secondary/50 transition-colors active:scale-[0.98]">
                 <CardContent className="p-4 flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-sage-light flex items-center justify-center flex-shrink-0">
                     <Users className="w-6 h-6 text-sage-dark" />
@@ -137,7 +139,11 @@ export function MemberHome() {
         </div>
         <div className="space-y-3">
           {upcomingEvents.map(event => (
-            <Card key={event.id} className="hover:bg-secondary/50 transition-colors">
+            <Card 
+              key={event.id} 
+              className="hover:bg-secondary/50 transition-colors active:scale-[0.98] cursor-pointer"
+              onClick={() => haptics.light()}
+            >
               <CardContent className="p-4 flex items-center gap-4">
                 <div className="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-primary/10 flex-shrink-0">
                   <span className="text-[10px] font-medium text-primary uppercase">
@@ -149,7 +155,7 @@ export function MemberHome() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-foreground truncate">{event.title}</h3>
-                <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     {format(parseISO(event.startDate), 'h:mm a')} • {event.roomName || 'TBD'}
                   </p>
                 </div>
@@ -163,14 +169,22 @@ export function MemberHome() {
   );
 }
 
-function QuickAction({ href, icon: Icon, label, color }: { 
+function QuickAction({ href, icon: Icon, label, color, onPress }: { 
   href: string; 
   icon: any; 
   label: string;
   color: string;
+  onPress?: () => void;
 }) {
+  const haptics = useHaptics();
+  
+  const handleClick = () => {
+    haptics.light();
+    onPress?.();
+  };
+  
   return (
-    <Link to={href} className="flex flex-col items-center gap-2">
+    <Link to={href} onClick={handleClick} className="flex flex-col items-center gap-2 active:scale-95 transition-transform">
       <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center`}>
         <Icon className="w-6 h-6" />
       </div>
