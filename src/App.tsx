@@ -22,6 +22,7 @@ import Communications from "./pages/Communications";
 import MobileApp from "./pages/MobileApp";
 import Install from "./pages/Install";
 import Settings from "./pages/Settings";
+import PitchDeck from "./pages/PitchDeck";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ const App = () => (
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               <Route path="/app/*" element={<MobileApp />} />
               <Route path="/install" element={<Install />} />
+              <Route path="/pitch" element={<PitchDeck />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
