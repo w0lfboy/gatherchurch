@@ -11,6 +11,7 @@ import {
   Bell
 } from 'lucide-react';
 import { AppMode } from '@/types/mobile';
+import { useHaptics } from '@/hooks/useHaptics';
 
 interface MobileNavProps {
   mode: AppMode;
@@ -34,7 +35,12 @@ const leaderNavItems = [
 
 export function MobileNav({ mode }: MobileNavProps) {
   const location = useLocation();
+  const haptics = useHaptics();
   const navItems = mode === 'leader' ? leaderNavItems : memberNavItems;
+
+  const handleNavClick = () => {
+    haptics.light();
+  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-bottom z-50">
@@ -47,6 +53,7 @@ export function MobileNav({ mode }: MobileNavProps) {
             <Link
               key={item.id}
               to={item.href}
+              onClick={handleNavClick}
               className={cn(
                 'flex flex-col items-center justify-center flex-1 py-2 px-1 rounded-lg transition-colors',
                 isActive 

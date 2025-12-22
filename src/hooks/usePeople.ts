@@ -1,58 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useTenant } from '@/hooks/useTenant';
 import { toast } from 'sonner';
 import type { Person, PeopleFilter } from '@/types/people';
-
-// Database row type (matches Supabase schema)
-interface PersonRow {
-  id: string;
-  tenant_id: string;
-  first_name: string;
-  last_name: string;
-  email: string | null;
-  phone: string | null;
-  avatar_url: string | null;
-  status: string;
-  member_since: string | null;
-  first_visit: string | null;
-  birth_date: string | null;
-  gender: string | null;
-  household_id: string | null;
-  household_role: string | null;
-  background_check_status: string | null;
-  background_check_date: string | null;
-  directory_visibility: Record<string, boolean> | null;
-  pipeline_stage_id: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-// Transform database row to frontend Person type
-function transformPerson(row: PersonRow): Person {
-  return {
-    id: row.id,
-    firstName: row.first_name,
-    lastName: row.last_name,
-    email: row.email || undefined,
-    phone: row.phone || undefined,
-    avatar: row.avatar_url || undefined,
-    status: row.status as Person['status'],
-    householdId: row.household_id || undefined,
-    householdRole: row.household_role as Person['householdRole'],
-    birthDate: row.birth_date || undefined,
-    gender: row.gender as Person['gender'],
-    memberSince: row.member_since || undefined,
-    firstVisit: row.first_visit || undefined,
-    tags: [], // Will be populated separately
-    pipelineStageId: row.pipeline_stage_id || undefined,
-    backgroundCheckStatus: row.background_check_status as Person['backgroundCheckStatus'],
-    backgroundCheckDate: row.background_check_date || undefined,
-    directoryVisibility: row.directory_visibility as Person['directoryVisibility'],
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-  };
-}
+import { mockPeople } from '@/data/mockPeopleData';
 
 // Input type for creating/updating people
 interface PersonInput {
@@ -70,59 +20,45 @@ interface PersonInput {
 }
 
 // ============================================================================
-// QUERIES
+// QUERIES (Using mock data until people table is created)
 // ============================================================================
 
 /**
  * Fetch all people for the current tenant
  */
 export function usePeople(filter?: PeopleFilter) {
-  const { currentTenant } = useTenant();
+  const { tenant } = useTenant();
   
   return useQuery({
-    queryKey: ['people', currentTenant?.id, filter],
+    queryKey: ['people', tenant?.id, filter],
     queryFn: async () => {
-      if (!currentTenant?.id) {
-        return [];
-      }
-
-      let query = supabase
-        .from('people')
-        .select('*')
-        .order('last_name', { ascending: true })
-        .order('first_name', { ascending: true });
+      // Using mock data since people table doesn't exist yet
+      let filtered = [...mockPeople];
 
       // Apply filters
       if (filter?.search) {
-        query = query.or(`first_name.ilike.%${filter.search}%,last_name.ilike.%${filter.search}%,email.ilike.%${filter.search}%`);
+        const search = filter.search.toLowerCase();
+        filtered = filtered.filter(p => 
+          p.firstName.toLowerCase().includes(search) ||
+          p.lastName.toLowerCase().includes(search) ||
+          p.email?.toLowerCase().includes(search)
+        );
       }
 
       if (filter?.status && filter.status.length > 0) {
-        query = query.in('status', filter.status);
+        filtered = filtered.filter(p => filter.status!.includes(p.status));
       }
 
       if (filter?.householdId) {
-        query = query.eq('household_id', filter.householdId);
+        filtered = filtered.filter(p => p.householdId === filter.householdId);
       }
 
       if (filter?.hasEmail !== undefined) {
-        if (filter.hasEmail) {
-          query = query.not('email', 'is', null);
-        } else {
-          query = query.is('email', null);
-        }
+        filtered = filtered.filter(p => filter.hasEmail ? !!p.email : !p.email);
       }
 
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching people:', error);
-        throw error;
-      }
-
-      return (data || []).map(transformPerson);
+      return filtered;
     },
-    enabled: !!currentTenant?.id,
   });
 }
 
@@ -130,29 +66,13 @@ export function usePeople(filter?: PeopleFilter) {
  * Fetch a single person by ID
  */
 export function usePerson(personId: string | undefined) {
-  const { currentTenant } = useTenant();
-  
   return useQuery({
     queryKey: ['person', personId],
     queryFn: async () => {
-      if (!personId) {
-        return null;
-      }
-
-      const { data, error } = await supabase
-        .from('people')
-        .select('*')
-        .eq('id', personId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching person:', error);
-        throw error;
-      }
-
-      return transformPerson(data);
+      if (!personId) return null;
+      return mockPeople.find(p => p.id === personId) || null;
     },
-    enabled: !!personId && !!currentTenant?.id,
+    enabled: !!personId,
   });
 }
 
@@ -160,59 +80,32 @@ export function usePerson(personId: string | undefined) {
  * Fetch people with their tags
  */
 export function usePeopleWithTags(filter?: PeopleFilter) {
-  const { currentTenant } = useTenant();
+  const { tenant } = useTenant();
   
   return useQuery({
-    queryKey: ['people-with-tags', currentTenant?.id, filter],
+    queryKey: ['people-with-tags', tenant?.id, filter],
     queryFn: async () => {
-      if (!currentTenant?.id) {
-        return [];
-      }
-
-      // Fetch people
-      let query = supabase
-        .from('people')
-        .select(`
-          *,
-          person_tags (
-            tag_id,
-            tags (
-              id,
-              name,
-              color,
-              category
-            )
-          )
-        `)
-        .order('last_name', { ascending: true });
+      let filtered = [...mockPeople];
 
       if (filter?.search) {
-        query = query.or(`first_name.ilike.%${filter.search}%,last_name.ilike.%${filter.search}%`);
+        const search = filter.search.toLowerCase();
+        filtered = filtered.filter(p => 
+          p.firstName.toLowerCase().includes(search) ||
+          p.lastName.toLowerCase().includes(search)
+        );
       }
 
       if (filter?.status && filter.status.length > 0) {
-        query = query.in('status', filter.status);
+        filtered = filtered.filter(p => filter.status!.includes(p.status));
       }
 
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching people with tags:', error);
-        throw error;
-      }
-
-      return (data || []).map((row: any) => {
-        const person = transformPerson(row);
-        person.tags = (row.person_tags || []).map((pt: any) => pt.tag_id);
-        return person;
-      });
+      return filtered;
     },
-    enabled: !!currentTenant?.id,
   });
 }
 
 // ============================================================================
-// MUTATIONS
+// MUTATIONS (Placeholder - will work with real database later)
 // ============================================================================
 
 /**
@@ -220,39 +113,31 @@ export function usePeopleWithTags(filter?: PeopleFilter) {
  */
 export function useCreatePerson() {
   const queryClient = useQueryClient();
-  const { currentTenant } = useTenant();
 
   return useMutation({
     mutationFn: async (input: PersonInput) => {
-      if (!currentTenant?.id) {
-        throw new Error('No tenant selected');
-      }
-
-      const { data, error } = await supabase
-        .from('people')
-        .insert({
-          tenant_id: currentTenant.id,
-          first_name: input.firstName,
-          last_name: input.lastName,
-          email: input.email || null,
-          phone: input.phone || null,
-          status: input.status || 'visitor',
-          birth_date: input.birthDate || null,
-          gender: input.gender || null,
-          household_id: input.householdId || null,
-          household_role: input.householdRole || null,
-          member_since: input.memberSince || null,
-          first_visit: input.firstVisit || new Date().toISOString().split('T')[0],
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating person:', error);
-        throw error;
-      }
-
-      return transformPerson(data);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const newPerson: Person = {
+        id: crypto.randomUUID(),
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        phone: input.phone,
+        status: input.status || 'visitor',
+        birthDate: input.birthDate,
+        gender: input.gender,
+        householdId: input.householdId,
+        householdRole: input.householdRole,
+        memberSince: input.memberSince,
+        firstVisit: input.firstVisit || new Date().toISOString().split('T')[0],
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      return newPerson;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['people'] });
@@ -272,32 +157,13 @@ export function useUpdatePerson() {
 
   return useMutation({
     mutationFn: async ({ id, ...input }: PersonInput & { id: string }) => {
-      const updates: Record<string, any> = {};
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      if (input.firstName !== undefined) updates.first_name = input.firstName;
-      if (input.lastName !== undefined) updates.last_name = input.lastName;
-      if (input.email !== undefined) updates.email = input.email || null;
-      if (input.phone !== undefined) updates.phone = input.phone || null;
-      if (input.status !== undefined) updates.status = input.status;
-      if (input.birthDate !== undefined) updates.birth_date = input.birthDate || null;
-      if (input.gender !== undefined) updates.gender = input.gender || null;
-      if (input.householdId !== undefined) updates.household_id = input.householdId || null;
-      if (input.householdRole !== undefined) updates.household_role = input.householdRole || null;
-      if (input.memberSince !== undefined) updates.member_since = input.memberSince || null;
-
-      const { data, error } = await supabase
-        .from('people')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error updating person:', error);
-        throw error;
-      }
-
-      return transformPerson(data);
+      const existing = mockPeople.find(p => p.id === id);
+      if (!existing) throw new Error('Person not found');
+      
+      return { ...existing, ...input, updatedAt: new Date().toISOString() };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['people'] });
@@ -318,15 +184,8 @@ export function useDeletePerson() {
 
   return useMutation({
     mutationFn: async (personId: string) => {
-      const { error } = await supabase
-        .from('people')
-        .delete()
-        .eq('id', personId);
-
-      if (error) {
-        console.error('Error deleting person:', error);
-        throw error;
-      }
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['people'] });
@@ -350,14 +209,8 @@ export function useAddPersonTag() {
 
   return useMutation({
     mutationFn: async ({ personId, tagId }: { personId: string; tagId: string }) => {
-      const { error } = await supabase
-        .from('person_tags')
-        .insert({ person_id: personId, tag_id: tagId });
-
-      if (error) {
-        console.error('Error adding tag:', error);
-        throw error;
-      }
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 300));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['people'] });
@@ -374,16 +227,8 @@ export function useRemovePersonTag() {
 
   return useMutation({
     mutationFn: async ({ personId, tagId }: { personId: string; tagId: string }) => {
-      const { error } = await supabase
-        .from('person_tags')
-        .delete()
-        .eq('person_id', personId)
-        .eq('tag_id', tagId);
-
-      if (error) {
-        console.error('Error removing tag:', error);
-        throw error;
-      }
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 300));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['people'] });
@@ -400,35 +245,21 @@ export function useRemovePersonTag() {
  * Get people statistics for the dashboard
  */
 export function usePeopleStats() {
-  const { currentTenant } = useTenant();
+  const { tenant } = useTenant();
   
   return useQuery({
-    queryKey: ['people-stats', currentTenant?.id],
+    queryKey: ['people-stats', tenant?.id],
     queryFn: async () => {
-      if (!currentTenant?.id) {
-        return null;
-      }
-
-      const { data, error } = await supabase
-        .from('people')
-        .select('status');
-
-      if (error) {
-        console.error('Error fetching people stats:', error);
-        throw error;
-      }
-
       const stats = {
-        total: data?.length || 0,
-        members: data?.filter(p => p.status === 'member').length || 0,
-        visitors: data?.filter(p => p.status === 'visitor').length || 0,
-        volunteers: data?.filter(p => p.status === 'volunteer').length || 0,
-        leaders: data?.filter(p => p.status === 'leader').length || 0,
-        inactive: data?.filter(p => p.status === 'inactive').length || 0,
+        total: mockPeople.length,
+        members: mockPeople.filter(p => p.status === 'member').length,
+        visitors: mockPeople.filter(p => p.status === 'visitor').length,
+        volunteers: mockPeople.filter(p => p.status === 'volunteer').length,
+        leaders: mockPeople.filter(p => p.status === 'leader').length,
+        inactive: mockPeople.filter(p => p.status === 'inactive').length,
       };
 
       return stats;
     },
-    enabled: !!currentTenant?.id,
   });
 }

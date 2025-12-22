@@ -17,8 +17,10 @@ import { mockMySundays, mockConnectCards, connectCardTypes } from '@/data/mockMo
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from 'date-fns';
 import { PullToRefresh } from './PullToRefresh';
 import { toast } from 'sonner';
+import { useHaptics } from '@/hooks/useHaptics';
 
 export function LeaderHome() {
+  const haptics = useHaptics();
   const [refreshKey, setRefreshKey] = useState(0);
   
   const nextShift = mockMySundays[0];
@@ -111,7 +113,7 @@ export function LeaderHome() {
                   <p className="text-sm text-muted-foreground">{nextShift.notes}</p>
                 </div>
               )}
-              <Button className="w-full mt-4" size="sm">
+              <Button className="w-full mt-4" size="sm" haptic="medium">
                 <CheckCircle className="w-4 h-4 mr-2" />
                 I'll Be There
               </Button>
@@ -130,7 +132,11 @@ export function LeaderHome() {
         </div>
         <div className="space-y-3">
           {upcomingShifts.slice(1).map(shift => (
-            <Card key={shift.id}>
+            <Card 
+              key={shift.id} 
+              className="active:scale-[0.98] transition-transform cursor-pointer"
+              onClick={() => haptics.light()}
+            >
               <CardContent className="p-4 flex items-center gap-4">
                 <div className="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-secondary flex-shrink-0">
                   <span className="text-[10px] font-medium text-muted-foreground uppercase">
@@ -164,7 +170,11 @@ export function LeaderHome() {
           </div>
           <div className="space-y-3">
             {newConnectCards.slice(0, 3).map(card => (
-              <Card key={card.id}>
+              <Card 
+                key={card.id} 
+                className="active:scale-[0.98] transition-transform cursor-pointer"
+                onClick={() => haptics.light()}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
                     <div className={`w-2 h-2 rounded-full mt-2 ${connectCardTypes[card.type].color}`} />
