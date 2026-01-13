@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Service } from "@/types/services";
-import { formatServiceDate, formatTime } from "@/data/mockServicesData";
+import { formatServiceDate } from "@/data/mockServicesData";
 import { ServiceTypeChip } from "./ServiceTypeChip";
 import { StatusBadge } from "./StatusBadge";
 import { Music, Users, ListChecks, Edit3, Eye, Share2 } from "lucide-react";
@@ -20,10 +20,10 @@ export const UpcomingServiceCard = ({
   featured = false,
   className 
 }: UpcomingServiceCardProps) => {
-  const songCount = service.items.filter(item => item.itemType === 'song').length;
-  const assignmentCount = service.assignments.length;
-  const confirmedCount = service.assignments.filter(a => a.status === 'confirmed').length;
-  const isReady = confirmedCount >= assignmentCount * 0.7;
+  const songCount = service.items.filter(item => item.type === 'song').length;
+  const volunteerCount = service.volunteers.length;
+  const confirmedCount = service.volunteers.filter(a => a.status === 'confirmed').length;
+  const isReady = volunteerCount > 0 && confirmedCount >= volunteerCount * 0.7;
 
   return (
     <Card 
@@ -48,11 +48,11 @@ export const UpcomingServiceCard = ({
               </p>
             )}
             <p className="text-lg font-display font-semibold text-foreground">
-              {formatServiceDate(service.serviceDate)}
+              {formatServiceDate(service.date)}
             </p>
             <p className="text-sm text-muted-foreground">
-              {formatTime(service.startTime)}
-              {service.endTime && ` – ${formatTime(service.endTime)}`}
+              {service.time}
+              {service.endTime && ` – ${service.endTime}`}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -62,7 +62,7 @@ export const UpcomingServiceCard = ({
                 color={service.serviceType.color} 
               />
             )}
-            <StatusBadge status={service.status} />
+            <StatusBadge status={service.status as any} />
           </div>
         </div>
 
@@ -77,18 +77,18 @@ export const UpcomingServiceCard = ({
         )}
 
         {/* Quick Stats */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50">
             <Music className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">{songCount} songs</span>
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50">
             <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">{confirmedCount}/{assignmentCount} team</span>
+            <span className="text-sm font-medium">{confirmedCount}/{volunteerCount} team</span>
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50">
             <ListChecks className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">{service.items.filter(i => i.itemType !== 'header').length} items</span>
+            <span className="text-sm font-medium">{service.items.filter(i => i.type !== 'header').length} items</span>
           </div>
           {isReady && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sage-light text-sage-dark">

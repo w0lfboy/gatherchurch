@@ -3,7 +3,7 @@ import { formatDuration } from '@/data/mockServicesData';
 import { cn } from '@/lib/utils';
 import { 
   Music, Mic, BookOpen, Heart, Video, 
-  MoreHorizontal, GripVertical, Clock
+  MoreHorizontal, GripVertical, Clock, Heading, MonitorPlay, ScrollText
 } from 'lucide-react';
 
 interface ServiceItemCardProps {
@@ -20,6 +20,10 @@ const typeIcons: Record<ServiceItemType, typeof Music> = {
   offering: Heart,
   video: Video,
   other: Clock,
+  custom: Clock,
+  header: Heading,
+  media: MonitorPlay,
+  scripture: ScrollText,
 };
 
 const typeColors: Record<ServiceItemType, string> = {
@@ -30,6 +34,10 @@ const typeColors: Record<ServiceItemType, string> = {
   offering: 'bg-coral-light border-coral/20 text-coral',
   video: 'bg-secondary border-border text-muted-foreground',
   other: 'bg-muted border-border text-muted-foreground',
+  custom: 'bg-muted border-border text-muted-foreground',
+  header: 'bg-transparent border-0 text-foreground font-semibold',
+  media: 'bg-secondary border-border text-muted-foreground',
+  scripture: 'bg-primary/10 border-primary/20 text-primary',
 };
 
 export const ServiceItemCard = ({ item, onEdit, isDragging }: ServiceItemCardProps) => {

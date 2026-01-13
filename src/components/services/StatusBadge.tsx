@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Clock, XCircle, Circle, PlayCircle, FileEdit } from "lucide-react";
+import { CheckCircle2, Clock, XCircle, Circle, PlayCircle, FileEdit, Edit } from "lucide-react";
 
-type StatusType = 'confirmed' | 'pending' | 'declined' | 'draft' | 'scheduled' | 'live' | 'completed';
+type StatusType = 'confirmed' | 'pending' | 'declined' | 'draft' | 'scheduled' | 'live' | 'completed' | 'planning';
 
 interface StatusBadgeProps {
   status: StatusType;
@@ -30,6 +30,11 @@ const statusConfig: Record<StatusType, { label: string; icon: typeof CheckCircle
     label: 'Draft',
     icon: FileEdit,
     className: 'bg-muted text-muted-foreground',
+  },
+  planning: {
+    label: 'Planning',
+    icon: Edit,
+    className: 'bg-gold/15 text-gold',
   },
   scheduled: {
     label: 'Scheduled',

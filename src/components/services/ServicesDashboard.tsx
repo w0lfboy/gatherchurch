@@ -17,17 +17,17 @@ export const ServicesDashboard = ({ onSelectService, onNavigate }: ServicesDashb
   
   // Sort services by date
   const sortedServices = [...mockServices].sort(
-    (a, b) => new Date(a.serviceDate).getTime() - new Date(b.serviceDate).getTime()
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
   
   // Get next service (this week or upcoming)
   const nextService = sortedServices.find(
-    s => new Date(s.serviceDate) >= new Date()
+    s => new Date(s.date) >= new Date()
   );
   
   // Get upcoming services (excluding the featured one)
   const upcomingServices = sortedServices
-    .filter(s => s.id !== nextService?.id && new Date(s.serviceDate) >= new Date())
+    .filter(s => s.id !== nextService?.id && new Date(s.date) >= new Date())
     .slice(0, 4);
 
   return (
