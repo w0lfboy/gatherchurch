@@ -1,11 +1,13 @@
-export type ServiceItemType = 'song' | 'announcement' | 'prayer' | 'message' | 'offering' | 'video' | 'other';
+export type ServiceItemType = 'song' | 'announcement' | 'prayer' | 'message' | 'offering' | 'video' | 'header' | 'scripture' | 'media' | 'custom' | 'other';
+
+export type ServiceSection = 'pre-service' | 'worship' | 'message' | 'response' | 'main';
 
 export interface SongArrangement {
   id: string;
-  name: string; // e.g., "Full Band", "Acoustic", "Keys Only"
+  name: string;
   key: string;
   tempo: number;
-  duration: number; // in seconds
+  duration: number;
   chordChartUrl?: string;
   mp3Url?: string;
   notes?: string;
@@ -17,26 +19,32 @@ export interface Song {
   artist: string;
   defaultKey: string;
   defaultTempo: number;
-  duration: number; // in seconds
+  duration: number;
   arrangements: SongArrangement[];
   tags: string[];
   lastUsed?: string;
   timesUsed: number;
   ccliNumber?: string;
   lyrics?: string;
+  availableKeys?: string[];
+  tempo?: 'slow' | 'medium' | 'fast';
+  bpm?: number;
+  isActive?: boolean;
 }
 
 export interface ServiceItem {
   id: string;
   type: ServiceItemType;
   title: string;
-  duration: number; // in seconds
+  duration: number;
   assignee?: string;
   notes?: string;
   songId?: string;
   arrangementId?: string;
   selectedKey?: string;
   order: number;
+  section?: ServiceSection;
+  description?: string;
 }
 
 export interface ServiceVolunteer {
@@ -46,6 +54,16 @@ export interface ServiceVolunteer {
   role: string;
   status: 'pending' | 'confirmed' | 'declined';
   notes?: string;
+  avatarUrl?: string;
+}
+
+export interface ServiceType {
+  id: string;
+  name: string;
+  color: string;
+  description?: string;
+  defaultStartTime?: string;
+  isActive: boolean;
 }
 
 export interface Service {
@@ -53,12 +71,16 @@ export interface Service {
   name: string;
   date: string;
   time: string;
-  linkedServiceId?: string; // If this is a linked copy
-  isLinked: boolean; // Whether changes sync to linked services
+  endTime?: string;
+  linkedServiceId?: string;
+  isLinked: boolean;
   items: ServiceItem[];
   volunteers: ServiceVolunteer[];
   notes?: string;
-  status: 'draft' | 'planning' | 'confirmed' | 'completed';
+  status: 'draft' | 'planning' | 'scheduled' | 'confirmed' | 'live' | 'completed';
+  serviceType?: ServiceType;
+  seriesName?: string;
+  seriesWeek?: number;
 }
 
 export interface ServiceTemplate {
@@ -66,4 +88,11 @@ export interface ServiceTemplate {
   name: string;
   description: string;
   items: Omit<ServiceItem, 'id'>[];
+}
+
+export interface ServicesStats {
+  totalServicesPlanned: number;
+  activeVolunteers: number;
+  songsInLibrary: number;
+  acceptRate: number;
 }
