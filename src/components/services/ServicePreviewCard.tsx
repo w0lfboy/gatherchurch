@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Service } from "@/types/services";
-import { formatServiceDate, formatTime } from "@/data/mockServicesData";
 import { ServiceTypeChip } from "./ServiceTypeChip";
 import { StatusBadge } from "./StatusBadge";
 import { cn } from "@/lib/utils";
@@ -16,8 +15,8 @@ export const ServicePreviewCard = ({
   onClick,
   className 
 }: ServicePreviewCardProps) => {
-  const assignmentCount = service.assignments.length;
-  const confirmedCount = service.assignments.filter(a => a.status === 'confirmed').length;
+  const volunteerCount = service.volunteers.length;
+  const confirmedCount = service.volunteers.filter(a => a.status === 'confirmed').length;
   const hasItems = service.items.length > 0;
 
   return (
@@ -33,10 +32,10 @@ export const ServicePreviewCard = ({
         <div className="flex items-start justify-between mb-3">
           <div>
             <p className="text-sm font-display font-semibold text-foreground">
-              {new Date(service.serviceDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              {new Date(service.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             </p>
             <p className="text-xs text-muted-foreground">
-              {formatTime(service.startTime)}
+              {service.time}
             </p>
           </div>
           {service.serviceType && (
@@ -52,10 +51,10 @@ export const ServicePreviewCard = ({
         <div className="flex items-center justify-between">
           <div className="text-xs text-muted-foreground">
             {!hasItems && 'Not started'}
-            {hasItems && assignmentCount === 0 && 'No team assigned'}
-            {assignmentCount > 0 && `${confirmedCount}/${assignmentCount} scheduled`}
+            {hasItems && volunteerCount === 0 && 'No team assigned'}
+            {volunteerCount > 0 && `${confirmedCount}/${volunteerCount} scheduled`}
           </div>
-          <StatusBadge status={service.status} showIcon={false} size="sm" />
+          <StatusBadge status={service.status as any} showIcon={false} size="sm" />
         </div>
       </CardContent>
     </Card>
