@@ -1,48 +1,80 @@
-import { Heart } from "lucide-react";
+import { Heart, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = {
-  Product: ["Features", "Pricing", "Integrations", "Changelog"],
-  Resources: ["Help Center", "Blog", "Guides", "Webinars"],
-  Company: ["About", "Careers", "Contact", "Press"],
-  Legal: ["Privacy", "Terms", "Security"],
+  Product: [
+    { label: "Features", href: "#features" },
+    { label: "Pricing", href: "#pricing" },
+    { label: "Integrations", href: "#" },
+    { label: "Changelog", href: "#" },
+  ],
+  Resources: [
+    { label: "Help Center", href: "#" },
+    { label: "Blog", href: "#" },
+    { label: "Guides", href: "#" },
+    { label: "Webinars", href: "#" },
+  ],
+  Company: [
+    { label: "About", href: "#about" },
+    { label: "Careers", href: "#" },
+    { label: "Contact", href: "#" },
+    { label: "Press", href: "#" },
+  ],
+  Legal: [
+    { label: "Privacy", href: "#" },
+    { label: "Terms", href: "#" },
+    { label: "Security", href: "#" },
+  ],
 };
+
+const socialLinks = [
+  { label: "Twitter", href: "#" },
+  { label: "LinkedIn", href: "#" },
+  { label: "YouTube", href: "#" },
+];
 
 export const Footer = () => {
   return (
-    <footer className="py-16 bg-foreground text-background">
-      <div className="container px-4 mx-auto">
-        <div className="grid md:grid-cols-6 gap-12 mb-12">
-          {/* Brand */}
+    <footer className="py-16 bg-foreground text-background relative overflow-hidden">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
+      
+      <div className="container px-6 mx-auto relative">
+        <div className="grid md:grid-cols-6 gap-12 lg:gap-16 mb-16">
+          {/* Brand column */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+            <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                 <span className="text-primary-foreground font-display font-bold text-lg">G</span>
               </div>
               <span className="font-display font-semibold text-xl text-background">Gather</span>
-            </div>
-            <p className="text-background/60 text-sm leading-relaxed mb-6">
+            </Link>
+            <p className="text-background/60 text-sm leading-relaxed mb-8 max-w-xs">
               The simple, unified church management platform. Built for churches 
               who want to spend less time on software and more time on ministry.
             </p>
             <div className="flex items-center gap-2 text-sm text-background/40">
               <span>Made with</span>
-              <Heart className="w-4 h-4 text-coral fill-coral" />
+              <Heart className="w-4 h-4 text-accent fill-accent" />
               <span>for churches</span>
             </div>
           </div>
 
-          {/* Links */}
+          {/* Links columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="font-semibold text-background mb-4">{category}</h4>
+              <h4 className="font-semibold text-background mb-5 text-sm tracking-wide">
+                {category}
+              </h4>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link}>
+                  <li key={link.label}>
                     <a 
-                      href="#" 
-                      className="text-sm text-background/60 hover:text-background transition-colors"
+                      href={link.href} 
+                      className="group inline-flex items-center gap-1 text-sm text-background/50 hover:text-background transition-colors duration-300"
                     >
-                      {link}
+                      {link.label}
+                      <ArrowUpRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                     </a>
                   </li>
                 ))}
@@ -51,21 +83,21 @@ export const Footer = () => {
           ))}
         </div>
 
-        {/* Bottom */}
-        <div className="pt-8 border-t border-background/10 flex flex-col md:flex-row items-center justify-between gap-4">
+        {/* Bottom bar */}
+        <div className="pt-8 border-t border-background/10 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-sm text-background/40">
-            © 2024 Gather. All rights reserved.
+            © 2025 Gather. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-background/60 hover:text-background transition-colors">
-              Twitter
-            </a>
-            <a href="#" className="text-sm text-background/60 hover:text-background transition-colors">
-              LinkedIn
-            </a>
-            <a href="#" className="text-sm text-background/60 hover:text-background transition-colors">
-              YouTube
-            </a>
+          <div className="flex items-center gap-8">
+            {socialLinks.map((link) => (
+              <a 
+                key={link.label}
+                href={link.href} 
+                className="text-sm text-background/50 hover:text-background transition-colors duration-300"
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>
