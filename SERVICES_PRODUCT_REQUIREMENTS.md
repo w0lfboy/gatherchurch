@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This document defines the product requirements for GatherChurch's Services module, designed to compete directly with Planning Center Services. The module enables churches to plan worship services, manage song libraries with arrangements, schedule teams, and provide personal schedule views for volunteers and staff.
+This document defines the product requirements for ParishCenter's Services module, designed to compete directly with Planning Center Services. The module enables churches to plan worship services, manage song libraries with arrangements, schedule teams, and provide personal schedule views for volunteers and staff.
 
 ---
 
