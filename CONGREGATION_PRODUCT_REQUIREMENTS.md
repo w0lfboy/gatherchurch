@@ -2,7 +2,7 @@
 
 **Date:** January 2026  
 **Status:** Draft  
-**Based on:** Planning Center People Analysis + GatherChurch Architecture  
+**Based on:** Planning Center People Analysis + ParishCenter Architecture  
 **Module Priority:** P0 (Critical)
 
 ---
